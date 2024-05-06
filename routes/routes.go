@@ -5,6 +5,7 @@ import (
 	"mini-project/auth"
 	"mini-project/handler"
 	"mini-project/middleware"
+	"mini-project/product"
 	"mini-project/user"
 	"mini-project/utils/database"
 
@@ -15,9 +16,15 @@ func NewRouter(router *echo.Echo) {
 	userRepository := user.NewRepository(database.DB)
 	adminRepository := admin.NewRepository(database.DB)
 
+	productRepository := product.NewRepository(database.DB)
+
+	productUsecase := product.NewUsecase(productRepository)
+
 	authUsecase := auth.NewUsecase()
 	userUsecase := user.NewUsecase(userRepository)
 	adminUsecase := admin.NewUsecase(adminRepository)
+
+	productHandler := handler.NewProductHandler(productUsecase)
 
 	userHandler := handler.NewUserHandler(userUsecase, authUsecase)
 	adminHandler := handler.NewAdminHandler(adminUsecase, authUsecase)
@@ -28,6 +35,8 @@ func NewRouter(router *echo.Echo) {
 	api.POST("/login", userHandler.LoginUser)
 	api.POST("/verify-email", userHandler.VerifyEmail)
 	api.POST("/resend-otp", userHandler.ResendOTP)
+
+	api.GET("/products", productHandler.GetProducts)
 
 	api.POST("/products", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateProduct))
 	api.POST("/category", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateCategory))
