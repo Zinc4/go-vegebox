@@ -86,3 +86,30 @@ func (h *userHandler) VerifyEmail(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, response)
 }
+
+func (h *userHandler) ResendOTP(c echo.Context) error {
+	var input user.ResendOTPInput
+
+	err := c.Bind(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := helper.ErrorResponse("failed to resend OTP", errors)
+		return c.JSON(http.StatusUnprocessableEntity, response)
+	}
+
+	otp, err := h.userUsecase.ResendOTP(input.Email)
+	if err != nil {
+		response := helper.ErrorResponse("failed to resend OTP", err.Error())
+		return c.JSON(http.StatusInternalServerError, response)
+	}
+
+	err = helper.SendOTPByEmail(input.Email, otp.OTP)
+	if err != nil {
+		response := helper.ErrorResponse("failed to resend OTP", err.Error())
+		return c.JSON(http.StatusInternalServerError, response)
+
+	}
+
+	response := helper.SuccesResponse("success resend OTP")
+	return c.JSON(http.StatusOK, response)
+}
