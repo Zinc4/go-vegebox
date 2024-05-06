@@ -36,3 +36,24 @@ func (h *userHandler) RegisterUser(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, helper.SuccesResponse("success register account, please check your email for verification"))
 }
+
+func (h *userHandler) VerifyEmail(c echo.Context) error {
+	var input user.VerifyEmailPayloadData
+
+	err := c.Bind(&input)
+	if err != nil {
+		response := helper.ErrorResponse("failed to verify email", err.Error())
+		return c.JSON(http.StatusUnprocessableEntity, response)
+
+	}
+
+	err = h.userUsecase.VerifyEmail(input.Email, input.OTP)
+	if err != nil {
+		response := helper.ErrorResponse("failed to verify email", err.Error())
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	response := helper.SuccesResponse("success verify email")
+
+	return c.JSON(http.StatusOK, response)
+}
