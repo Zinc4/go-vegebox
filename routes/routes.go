@@ -30,5 +30,6 @@ func NewRouter(router *echo.Echo) {
 	api.POST("/resend-otp", userHandler.ResendOTP)
 
 	api.POST("/products", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateProduct))
+	api.POST("/category", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateCategory))
 
 }
