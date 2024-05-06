@@ -37,6 +37,35 @@ func (h *userHandler) RegisterUser(c echo.Context) error {
 	return c.JSON(http.StatusOK, helper.SuccesResponse("success register account, please check your email for verification"))
 }
 
+func (h *userHandler) LoginUser(c echo.Context) error {
+	var input user.LoginInput
+	err := c.Bind(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+
+		response := helper.ErrorResponse("failed to login", errors)
+		return c.JSON(http.StatusUnprocessableEntity, response)
+	}
+
+	loggedUser, err := h.userUsecase.Login(input)
+	if err != nil {
+		response := helper.ErrorResponse("failed to login", err.Error())
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	token, err := h.authUsecase.GenerateToken(loggedUser.ID)
+	if err != nil {
+		response := helper.ErrorResponse("failed to login", err.Error())
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	formatter := user.FormatUser(loggedUser, token)
+
+	response := helper.ResponseWithData("successfully login", formatter)
+
+	return c.JSON(http.StatusOK, response)
+}
+
 func (h *userHandler) VerifyEmail(c echo.Context) error {
 	var input user.VerifyEmailPayloadData
 
