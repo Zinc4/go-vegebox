@@ -31,5 +31,6 @@ func NewRouter(router *echo.Echo) {
 
 	api.POST("/products", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateProduct))
 	api.POST("/category", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateCategory))
+	api.GET("/users", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.GetAllUsers))
 
 }
