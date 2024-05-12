@@ -14,7 +14,7 @@ VEGEBOX merupakan project berbasis ecommerce yang menggunakan backend Golang. Pr
    - **Produk:** Melihat semua produk, Melihat kategori produk
    - **Cart:** Tambah produk ke keranjang, Edit produk di keranjang, Hapus produk di keranjang, Melihat checkout, Melihat keranjang sendiri
    - **Order:** Membuat pesanan berdasarkan keranjang, Melihat pesanan sendiri
-   - **Transaction:** Melakukan pembayaran ke pesanan, melihat riwayat pembayaran sendiri
+   - **Transaction:** Melakukan pembayaran pesanan, melihat riwayat pembayaran sendiri
 2. **Admin**
    - **Authentication:** Login dan Register
    - **Produk:** Mendapatkan data semua produk,Menambah produk, Menghapus produk, Memperbarui produk, Membuat kategori produk, Menghapus kategori produk

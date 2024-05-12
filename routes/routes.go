@@ -4,6 +4,7 @@ import (
 	"mini-project/admin"
 	"mini-project/auth"
 	"mini-project/cart"
+	chatbot "mini-project/chatbox"
 	"mini-project/handler"
 	"mini-project/middleware"
 	"mini-project/order"
@@ -43,7 +44,11 @@ func NewRouter(router *echo.Echo) {
 	userHandler := handler.NewUserHandler(userUsecase, authUsecase)
 	adminHandler := handler.NewAdminHandler(adminUsecase, authUsecase)
 
+	chatAI := chatbot.NewChatAI()
+
 	api := router.Group("api/v1")
+
+	api.POST("/chatbox", chatAI.HandleChatCompletion)
 
 	api.POST("/register", userHandler.RegisterUser)
 	api.POST("/login", userHandler.LoginUser)
