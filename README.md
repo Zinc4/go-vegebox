@@ -1,4 +1,4 @@
-![splash screen1]()
+![splash screen1](https://github.com/Zinc4/go-vegebox/assets/65228679/575fa45c-7308-460e-9b39-1e6f7ff0e8ed)
 
 # Vegebox | E-commerce Backend Project
 
