@@ -3,6 +3,7 @@ package routes
 import (
 	"mini-project/admin"
 	"mini-project/auth"
+	"mini-project/cart"
 	"mini-project/handler"
 	"mini-project/middleware"
 	"mini-project/product"
@@ -17,14 +18,17 @@ func NewRouter(router *echo.Echo) {
 	adminRepository := admin.NewRepository(database.DB)
 
 	productRepository := product.NewRepository(database.DB)
+	cartRepository := cart.NewRepository(database.DB)
 
 	productUsecase := product.NewUsecase(productRepository)
+	cartUsecase := cart.NewUsecase(cartRepository)
 
 	authUsecase := auth.NewUsecase()
 	userUsecase := user.NewUsecase(userRepository)
 	adminUsecase := admin.NewUsecase(adminRepository)
 
 	productHandler := handler.NewProductHandler(productUsecase)
+	cartHandler := handler.NewCartHandler(cartUsecase, productUsecase)
 
 	userHandler := handler.NewUserHandler(userUsecase, authUsecase)
 	adminHandler := handler.NewAdminHandler(adminUsecase, authUsecase)
@@ -40,8 +44,19 @@ func NewRouter(router *echo.Echo) {
 	api.PATCH("/avatar", middleware.AuthMiddleware(authUsecase, userUsecase, userHandler.UploadAvatar))
 	api.PATCH("/profile", middleware.AuthMiddleware(authUsecase, userUsecase, userHandler.UpdateProfile))
 
+	// product
 	api.GET("/products", productHandler.GetProducts)
 	api.GET("/products/:id", productHandler.GetProductByID)
+
+	// cart
+	api.POST("/carts", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.NewCart))
+	api.GET("/cart/:id", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.GetCart))
+	api.GET("/viewcarts", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.GetCarts))
+	api.POST("/cart/:id", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.AddProductToCart))
+	api.PUT("/cart/:cart_id/product/:product_id", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.UpdateCartItem))
+	api.DELETE("/cart/:cart_id/product/:product_id", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.DeleteProductFromCart))
+	api.DELETE("/cart/:id", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.DeleteCart))
+	api.GET("/cart/:id/checkout", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.CheckOut))
 
 	api.POST("/products", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateProduct))
 	api.POST("/category", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateCategory))
