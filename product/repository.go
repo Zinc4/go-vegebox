@@ -5,7 +5,6 @@ import "gorm.io/gorm"
 type Repository interface {
 	FindAll() ([]Product, error)
 	FindByID(ID int) (Product, error)
-	Update(product Product) (Product, error)
 	FindAllCategory() ([]Category, error)
 	FindByCategory(id int) ([]Product, error)
 }
@@ -20,7 +19,7 @@ func NewRepository(db *gorm.DB) *repository {
 
 func (r *repository) FindAll() ([]Product, error) {
 	var products []Product
-	err := r.db.Find(&products).Error
+	err := r.db.Preload("Category").Find(&products).Error
 	if err != nil {
 		return products, err
 	}
@@ -29,15 +28,7 @@ func (r *repository) FindAll() ([]Product, error) {
 
 func (r *repository) FindByID(ID int) (Product, error) {
 	var product Product
-	err := r.db.Where("id = ?", ID).First(&product).Error
-	if err != nil {
-		return product, err
-	}
-	return product, nil
-}
-
-func (r *repository) Update(product Product) (Product, error) {
-	err := r.db.Save(&product).Error
+	err := r.db.Preload("Category").Where("id = ?", ID).First(&product).Error
 	if err != nil {
 		return product, err
 	}
