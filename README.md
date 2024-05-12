@@ -23,19 +23,19 @@ VEGEBOX merupakan project berbasis ecommerce yang menggunakan backend Golang. Pr
 
 ## Tech Stacks
 
-- Code Editor : **[]()**
-- Backend Framework : **[]()**
-- ORM : **[]()**
-- API Deployment : **[]()**
-- Database Deployment : **[]()**
-- ERD Design tools : **[]()**
-- Containerize : **[]()**
-- Password Hash : **[]()**
-- Testing : **[]()**
-- Payment Gateway : **[]()**
-- Image Cloud : **[]()**
-- Mail Sender : **[]()**
-- API Documentation : **[]()**
+- Code Editor : **[Visual Studi Code]()**
+- Backend Framework : **[Echo]()**
+- ORM : **[GORM]()**
+- API Deployment : **[AWS EC2]()**
+- Database Deployment : **[RDS]()**
+- ERD Design tools : **[Lucid]()**
+- Containerize : **[Docker]()**
+- Password Hash : **[Argon2id]()**
+- Testing : **[Testify]()**
+- Payment Gateway : **[Midtrans]()**
+- Image Cloud : **[Cloudinary]()**
+- Mail Sender : **[Go-mail]()**
+- API Documentation : **[Postman]()**
 
 ## API Documentation
 
@@ -43,7 +43,7 @@ VEGEBOX merupakan project berbasis ecommerce yang menggunakan backend Golang. Pr
 
 ## ERD
 
-sertakan gambar ERD. bisa ditempelkan langsung di file markdown atau diberi link
+**RaiseUnity-ERD ![ERD-RaiseUnity]()**
 
 ## Setup
 
