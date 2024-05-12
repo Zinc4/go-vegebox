@@ -12,6 +12,11 @@ type LoginInput struct {
 	Password string `json:"password" form:"password" binding:"required"`
 }
 
+type UpdateProfile struct {
+	ID   int    `json:"-"`
+	Name string `json:"name,omitempty" form:"name" binding:"required"`
+}
+
 type ResendOTPInput struct {
 	Email string `json:"email" form:"email" binding:"required"`
 }

@@ -10,9 +10,9 @@ type User struct {
 	Avatar     string    `json:"avatar" form:"avatar" gorm:"type:varchar(255)"`
 	Role       string    `json:"role" gorm:"type:varchar(255) default:user"`
 	IsVerified bool      `json:"is_verified" gorm:"default:false"`
-	CreateAt   time.Time `json:"create_at"`
-	UpdateAt   time.Time `json:"update_at"`
-	DeleteAt   time.Time `json:"delete_at"`
+	CreateAt   time.Time `json:"created_at"`
+	UpdateAt   time.Time `json:"updated_at"`
+	DeleteAt   time.Time `json:"deleted_at"`
 }
 
 type OTP struct {
@@ -21,6 +21,6 @@ type OTP struct {
 	User       User      `json:"user" gorm:"foreignKey:UserId;references:ID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	OTP        string    `json:"otp" gorm:"type:varchar(255)"`
 	ExpiredOTP int64     `json:"expired_otp" gorm:"type:bigint"`
-	CreateAt   time.Time `json:"create_at"`
-	UpdateAt   time.Time `json:"update_at"`
+	CreateAt   time.Time `json:"created_at"`
+	UpdateAt   time.Time `json:"updated_at"`
 }

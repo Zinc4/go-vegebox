@@ -1,22 +1,18 @@
 package user
 
 type userFormatter struct {
-	ID       int    `json:"id"`
-	Name     string `json:"name"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	Token    string `json:"token"`
-	Avatar   string `json:"avatar"`
+	ID    int    `json:"id"`
+	Name  string `json:"name"`
+	Email string `json:"email"`
+	Token string `json:"token"`
 }
 
 func FormatUser(user User, token string) userFormatter {
 	return userFormatter{
-		ID:       user.ID,
-		Name:     user.Name,
-		Password: user.Password,
-		Email:    user.Email,
-		Token:    token,
-		Avatar:   user.Avatar,
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+		Token: token,
 	}
 }
 
