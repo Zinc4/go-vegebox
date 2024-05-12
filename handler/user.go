@@ -1,11 +1,15 @@
 package handler
 
 import (
+	"context"
 	"mini-project/auth"
 	"mini-project/helper"
 	"mini-project/user"
 	"net/http"
+	"os"
 
+	"github.com/cloudinary/cloudinary-go/v2"
+	"github.com/cloudinary/cloudinary-go/v2/api/uploader"
 	"github.com/labstack/echo/v4"
 )
 
@@ -27,6 +31,12 @@ func (h *userHandler) RegisterUser(c echo.Context) error {
 		response := helper.ErrorResponse("failed to register account", errors)
 		return c.JSON(http.StatusUnprocessableEntity, response)
 	}
+
+	// _, err = h.userUsecase.GetUserByEmail(input.Email)
+	// if err != nil {
+	// 	response := helper.ErrorResponse("failed to register account", err.Error())
+	// 	return c.JSON(http.StatusConflict, response)
+	// }
 
 	_, err = h.userUsecase.RegisterUser(input)
 	if err != nil {
@@ -112,4 +122,57 @@ func (h *userHandler) ResendOTP(c echo.Context) error {
 
 	response := helper.SuccesResponse("success resend OTP")
 	return c.JSON(http.StatusOK, response)
+}
+
+func (h *userHandler) UploadAvatar(c echo.Context) error {
+	currentUser := c.Get("CurrentUser").(user.User)
+
+	if err := c.Bind(&currentUser.ID); err != nil {
+		response := helper.ErrorResponse("Error payload", err.Error())
+		return c.JSON(http.StatusBadRequest, response)
+	}
+
+	fileHeader, _ := c.FormFile("avatar")
+	file, _ := fileHeader.Open()
+	ctx := context.Background()
+	urlCloudinary := os.Getenv("CLOUDINARY_URL")
+	cloudinaryUsecase, _ := cloudinary.NewFromURL(urlCloudinary)
+	response, _ := cloudinaryUsecase.Upload.Upload(ctx, file, uploader.UploadParams{})
+
+	_, err := h.userUsecase.SaveAvatar(currentUser.ID, response.SecureURL)
+	if err != nil {
+		response := helper.ErrorResponse("failed to upload avatar", err.Error())
+		return c.JSON(http.StatusInternalServerError, response)
+	}
+
+	res := helper.UpdateAvatarRes("success upload avatar", response.SecureURL)
+
+	return c.JSON(http.StatusOK, res)
+
+}
+
+func (h *userHandler) UpdateProfile(c echo.Context) error {
+	currentUser := c.Get("CurrentUser").(user.User)
+
+	var input user.UpdateProfile
+
+	input.ID = currentUser.ID
+
+	err := c.Bind(&input)
+	if err != nil {
+		errors := helper.FormatValidationError(err)
+		response := helper.ErrorResponse("failed to update profile", errors)
+		return c.JSON(http.StatusUnprocessableEntity, response)
+	}
+
+	updatedUser, err := h.userUsecase.UpdateName(input)
+	if err != nil {
+		response := helper.ErrorResponse("failed to update profile", err.Error())
+		return c.JSON(http.StatusInternalServerError, response)
+	}
+
+	response := helper.ResponseWithData("success update profile", user.FormatUserProfile(updatedUser))
+
+	return c.JSON(http.StatusOK, response)
+
 }

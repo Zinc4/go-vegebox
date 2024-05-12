@@ -18,15 +18,11 @@ type Usecase interface {
 	ResendOTP(email string) (OTP, error)
 	SaveAvatar(userID int, file string) (User, error)
 	GetUserByID(ID int) (User, error)
+	UpdateName(input UpdateProfile) (User, error)
 }
 
 type usecase struct {
 	repository Repository
-}
-
-// SaveAvatar implements Usecase.
-func (*usecase) SaveAvatar(userID int, file string) (User, error) {
-	panic("unimplemented")
 }
 
 func NewUsecase(repository Repository) *usecase {
@@ -38,6 +34,16 @@ func (u *usecase) RegisterUser(input RegisterUserInput) (User, error) {
 
 	user.Name = input.Name
 	user.Email = input.Email
+	if input.Name == "" {
+		return user, errors.New("name cannot be empty")
+	}
+	if input.Email == "" {
+		return user, errors.New("email cannot be empty")
+	}
+	if input.Password == "" {
+		return user, errors.New("password cannot be empty")
+	}
+
 	passwordHash, err := argon2id.CreateHash(input.Password, &argon2id.Params{
 		Memory:      128 * 1024,
 		Iterations:  4,
@@ -49,11 +55,28 @@ func (u *usecase) RegisterUser(input RegisterUserInput) (User, error) {
 		return user, err
 	}
 	user.Password = passwordHash
-	user.Role = input.Role
-	user.Avatar = "default.png"
+	user.Role = "user"
+	user.Avatar = "https://res.cloudinary.com/dvrhf8d9t/image/upload/v1715517059/default-avatar_yt6eua.png"
+
 	newUser, err := u.repository.Save(user)
 	if err != nil {
 		return newUser, err
+	}
+
+	if user.Name == "" && user.Email == "" && user.Password == "" {
+		return newUser, errors.New("please input your name, email, and password")
+	}
+
+	if newUser.Name == user.Name {
+		return newUser, errors.New("name already exist")
+	}
+
+	if newUser.Email == user.Email {
+		return newUser, errors.New("email already exist")
+	}
+
+	if newUser.Password == user.Password {
+		return newUser, errors.New("password already exist")
 	}
 
 	otp := helper.GenerateRandomOTP(6)
@@ -212,4 +235,48 @@ func (u *usecase) GetUserByID(ID int) (User, error) {
 	}
 
 	return user, nil
+}
+
+func (s *usecase) SaveAvatar(userID int, file string) (User, error) {
+	user, err := s.repository.FindByID(userID)
+	if err != nil {
+		return user, err
+	}
+
+	user.Avatar = file
+
+	updatedUser, err := s.repository.Update(user)
+	if err != nil {
+		return updatedUser, err
+	}
+
+	return updatedUser, nil
+}
+
+func (u *usecase) UpdateName(input UpdateProfile) (User, error) {
+
+	user, err := u.repository.FindByID(input.ID)
+
+	if user.Name == input.Name {
+		return user, errors.New("name already exists")
+	}
+
+	user.Name = input.Name
+
+	if err != nil {
+		return user, err
+	}
+
+	if user.ID == 0 {
+		return user, errors.New("user not found")
+	}
+
+	updatedUser, err := u.repository.Update(user)
+
+	if err != nil {
+		return updatedUser, err
+	}
+
+	return updatedUser, nil
+
 }
