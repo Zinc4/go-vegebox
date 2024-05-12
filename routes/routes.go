@@ -36,6 +36,10 @@ func NewRouter(router *echo.Echo) {
 	api.POST("/verify-email", userHandler.VerifyEmail)
 	api.POST("/resend-otp", userHandler.ResendOTP)
 
+	// user
+	api.PATCH("/avatar", middleware.AuthMiddleware(authUsecase, userUsecase, userHandler.UploadAvatar))
+	api.PATCH("/profile", middleware.AuthMiddleware(authUsecase, userUsecase, userHandler.UpdateProfile))
+
 	api.GET("/products", productHandler.GetProducts)
 	api.GET("/products/:id", productHandler.GetProductByID)
 
