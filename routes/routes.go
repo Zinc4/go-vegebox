@@ -78,8 +78,14 @@ func NewRouter(router *echo.Echo) {
 	api.GET("/transactions", middleware.AuthMiddleware(authUsecase, userUsecase, transactionHandler.GetUserTransaction))
 	api.POST("/transactions/payment-callback", transactionHandler.GetPaymentCallback)
 
-	api.POST("/products", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateProduct))
-	api.POST("/category", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateCategory))
+	// admin
 	api.GET("/users", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.GetAllUsers))
+	api.GET("/users/transactions", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.GetAllUserTransactions))
+	api.DELETE("/users/:id", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.DeleteUser))
+	api.POST("/products", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateProduct))
+	api.PUT("/products/:id", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.UpdateProduct))
+	api.DELETE("/products/:id", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.DeleteProduct))
+	api.POST("/category", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateCategory))
+	api.DELETE("/category/:id", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.DeleteCategory))
 
 }
