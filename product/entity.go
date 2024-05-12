@@ -6,13 +6,13 @@ type Product struct {
 	ID          int       `gorm:"primaryKey" json:"id"`
 	Name        string    `json:"name" gorm:"type:varchar(255)"`
 	Description string    `json:"description" gorm:"type:varchar(255)"`
-	CategoryID  int       `json:"category_id"`
+	CategoryID  int       `json:"-"`
 	Price       int       `json:"price" gorm:"type:int"`
 	Stock       int       `json:"stock" gorm:"type:int"`
-	CreateAt    time.Time `json:"create_at"`
-	UpdateAt    time.Time `json:"update_at"`
-	DeleteAt    time.Time `json:"delete_at"`
-	Category    Category  `gorm:"foreignKey:CategoryID"`
+	CreateAt    time.Time `json:"created_at"`
+	UpdateAt    time.Time `json:"updated_at"`
+	DeleteAt    time.Time `json:"deleted_at"`
+	Category    Category  `gorm:"foreignKey:CategoryID" json:"category"`
 }
 
 type Category struct {
