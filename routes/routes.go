@@ -6,6 +6,7 @@ import (
 	"mini-project/cart"
 	"mini-project/handler"
 	"mini-project/middleware"
+	"mini-project/order"
 	"mini-project/product"
 	"mini-project/user"
 	"mini-project/utils/database"
@@ -19,9 +20,11 @@ func NewRouter(router *echo.Echo) {
 
 	productRepository := product.NewRepository(database.DB)
 	cartRepository := cart.NewRepository(database.DB)
+	orderRepository := order.NewRepository(database.DB)
 
 	productUsecase := product.NewUsecase(productRepository)
 	cartUsecase := cart.NewUsecase(cartRepository)
+	orderUsecase := order.NewUsecase(orderRepository)
 
 	authUsecase := auth.NewUsecase()
 	userUsecase := user.NewUsecase(userRepository)
@@ -29,6 +32,7 @@ func NewRouter(router *echo.Echo) {
 
 	productHandler := handler.NewProductHandler(productUsecase)
 	cartHandler := handler.NewCartHandler(cartUsecase, productUsecase)
+	orderHandler := handler.NewOrderHandler(orderUsecase, cartUsecase, productUsecase)
 
 	userHandler := handler.NewUserHandler(userUsecase, authUsecase)
 	adminHandler := handler.NewAdminHandler(adminUsecase, authUsecase)
@@ -57,6 +61,11 @@ func NewRouter(router *echo.Echo) {
 	api.DELETE("/cart/:cart_id/product/:product_id", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.DeleteProductFromCart))
 	api.DELETE("/cart/:id", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.DeleteCart))
 	api.GET("/cart/:id/checkout", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.CheckOut))
+
+	// order
+	api.GET("/order/:cart_id", middleware.AuthMiddleware(authUsecase, userUsecase, orderHandler.CreateOrder))
+	api.GET("/orders", middleware.AuthMiddleware(authUsecase, userUsecase, orderHandler.GetOrders))
+	api.GET("/vieworder/:order_id", middleware.AuthMiddleware(authUsecase, userUsecase, orderHandler.GetOrder))
 
 	api.POST("/products", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateProduct))
 	api.POST("/category", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateCategory))
