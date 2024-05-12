@@ -7,7 +7,9 @@ import (
 	"mini-project/handler"
 	"mini-project/middleware"
 	"mini-project/order"
+	"mini-project/payment"
 	"mini-project/product"
+	"mini-project/transaction"
 	"mini-project/user"
 	"mini-project/utils/database"
 
@@ -21,10 +23,13 @@ func NewRouter(router *echo.Echo) {
 	productRepository := product.NewRepository(database.DB)
 	cartRepository := cart.NewRepository(database.DB)
 	orderRepository := order.NewRepository(database.DB)
+	transactionRepository := transaction.NewRepository(database.DB)
 
 	productUsecase := product.NewUsecase(productRepository)
 	cartUsecase := cart.NewUsecase(cartRepository)
 	orderUsecase := order.NewUsecase(orderRepository)
+	paymentUsecase := payment.NewUsecase()
+	transactionUsecase := transaction.NewUsecase(transactionRepository, orderRepository, paymentUsecase)
 
 	authUsecase := auth.NewUsecase()
 	userUsecase := user.NewUsecase(userRepository)
@@ -33,6 +38,7 @@ func NewRouter(router *echo.Echo) {
 	productHandler := handler.NewProductHandler(productUsecase)
 	cartHandler := handler.NewCartHandler(cartUsecase, productUsecase)
 	orderHandler := handler.NewOrderHandler(orderUsecase, cartUsecase, productUsecase)
+	transactionHandler := handler.NewTransactionHandler(transactionUsecase, orderUsecase)
 
 	userHandler := handler.NewUserHandler(userUsecase, authUsecase)
 	adminHandler := handler.NewAdminHandler(adminUsecase, authUsecase)
@@ -66,6 +72,11 @@ func NewRouter(router *echo.Echo) {
 	api.GET("/order/:cart_id", middleware.AuthMiddleware(authUsecase, userUsecase, orderHandler.CreateOrder))
 	api.GET("/orders", middleware.AuthMiddleware(authUsecase, userUsecase, orderHandler.GetOrders))
 	api.GET("/vieworder/:order_id", middleware.AuthMiddleware(authUsecase, userUsecase, orderHandler.GetOrder))
+
+	// transaction
+	api.GET("/transactions/:order_id", middleware.AuthMiddleware(authUsecase, userUsecase, transactionHandler.CreateTransaction))
+	api.GET("/transactions", middleware.AuthMiddleware(authUsecase, userUsecase, transactionHandler.GetUserTransaction))
+	api.POST("/transactions/payment-callback", transactionHandler.GetPaymentCallback)
 
 	api.POST("/products", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateProduct))
 	api.POST("/category", middleware.AuthMiddleware(authUsecase, userUsecase, adminHandler.CreateCategory))
