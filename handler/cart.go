@@ -333,6 +333,6 @@ func (h *cartHandler) CheckOut(c echo.Context) error {
 		totalPrice += int64(item.Product.Price) * int64(item.Quantity)
 	}
 
-	return c.JSON(http.StatusOK, helper.ResponseWithData("successfully checked out", map[string]interface{}{"cart": cart, "total_price": totalPrice}))
+	return c.JSON(http.StatusOK, helper.ResponseWithData("successfully checked out", map[string]interface{}{"cart": h.cartUsecase.GetCartSerializer(cart), "total_price": totalPrice}))
 
 }
