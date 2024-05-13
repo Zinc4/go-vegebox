@@ -39,11 +39,11 @@ VEGEBOX merupakan project berbasis ecommerce yang menggunakan backend Golang. Pr
 
 ## API Documentation
 
-- API SPEC : **[]()**
+- API SPEC : **[API-SPEC](https://documenter.getpostman.com/view/21327885/2sA3JNaLGA#1cbfed67-9322-4b11-9bbc-0b465d73f18c)**
 
 ## ERD
 
-**Vegebox-ERD ![ERD-Vegebox]()**
+-ERD : **[ERD-Vegebox](<![erd](https://github.com/Zinc4/go-vegebox/assets/65228679/a11cd85a-24e7-4092-8a1d-5830600201cf)>)**
 
 ## Setup
 
