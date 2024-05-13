@@ -1,5 +1,8 @@
 FROM golang:1.21 AS build-stage
 
+# Clear existing go.mod and go.sum files
+RUN rm -f go.mod go.sum
+
 COPY go.mod go.sum ./
 RUN go mod download
 
