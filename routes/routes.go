@@ -48,7 +48,7 @@ func NewRouter(router *echo.Echo) {
 
 	api := router.Group("api/v1")
 
-	api.POST("/chatbox", chatAI.HandleChatCompletion)
+	api.POST("/chatbox", chatAI.HandleChatAi)
 
 	api.POST("/register", userHandler.RegisterUser)
 	api.POST("/login", userHandler.LoginUser)

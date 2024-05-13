@@ -36,6 +36,7 @@ VEGEBOX merupakan project berbasis ecommerce yang menggunakan backend Golang. Pr
 - Image Cloud : **[Cloudinary](https://cloudinary.com/)**
 - Mail Sender : **[Go-mail](github.com/wneessen/go-mail)**
 - API Documentation : **[Postman](https://www.postman.com/)**
+- OpenAI : **[OpenAI](https://openai.com/)**
 
 ## API Documentation
 

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"mini-project/helper"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -22,43 +23,40 @@ func NewChatAI() *ChatAI {
 	return &ChatAI{}
 }
 
-func (c *ChatAI) HandleChatCompletion(ctx echo.Context) error {
+func (c *ChatAI) HandleChatAi(ctx echo.Context) error {
+	chatbotMessages := AiPayload["messages"].([]map[string]string)
+	if len(chatbotMessages) == 1 {
+		chatbotMessages = append(chatbotMessages, map[string]string{"role": "system", "content": "Anda seorang ahli dalam bidang hasil pertanian seperti buah, sayuran, dan biji bijian"})
+	}
+
 	var request AIRequest
 	if err := ctx.Bind(&request); err != nil {
-		return ctx.JSON(http.StatusBadRequest, echo.Map{"error": "Failed to parse request body"})
+		return ctx.JSON(http.StatusBadRequest, helper.ErrorResponse("Failed to parse request body", err.Error()))
 	}
 
-	payload := AIRequest{
-		Model:    "gpt-3.5-turbo",
-		Messages: request.Messages,
-		Stream:   true,
+	chatbotMessages = append(chatbotMessages, map[string]string{"role": "user", "content": request.Messages[0].Content})
+
+	payload := map[string]interface{}{
+		"model":    "gpt-3.5-turbo",
+		"messages": []map[string]string{chatbotMessages[len(chatbotMessages)-2], chatbotMessages[len(chatbotMessages)-1]},
 	}
-
-	respBody, statusCode, err := sendRequestToChatbot(payload)
-	if err != nil {
-		return ctx.JSON(http.StatusInternalServerError, echo.Map{"error": err.Error()})
-	}
-
-	return ctx.JSONBlob(statusCode, respBody)
-}
-
-func sendRequestToChatbot(payload AIRequest) ([]byte, int, error) {
 
 	jsonPayload, err := json.Marshal(payload)
 	if err != nil {
-		return nil, http.StatusInternalServerError, err
+		return ctx.JSON(http.StatusInternalServerError, helper.ErrorResponse("Failed to marshal JSON payload", err.Error()))
 	}
 
 	resp, err := http.Post("https://wgpt-production.up.railway.app/v1/chat/completions", "application/json", bytes.NewBuffer(jsonPayload))
 	if err != nil {
-		return nil, http.StatusInternalServerError, err
+		return ctx.JSON(http.StatusInternalServerError, helper.ErrorResponse("Failed to send request", err.Error()))
 	}
 	defer resp.Body.Close()
 
 	body, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, http.StatusInternalServerError, err
+		return ctx.JSON(http.StatusInternalServerError, helper.ErrorResponse("Failed to read response body", err.Error()))
 	}
 
-	return body, resp.StatusCode, nil
+	return ctx.JSONBlob(resp.StatusCode, body)
+
 }

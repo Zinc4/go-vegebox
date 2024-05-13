@@ -20,4 +20,4 @@ EXPOSE 1323
 
 USER nonroot:nonroot
 
-ENTRYPOINT ["./goapp"]
+CMD ["./goapp"]
