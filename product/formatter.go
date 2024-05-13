@@ -18,6 +18,7 @@ func FormatProduct(product Product) productFormatter {
 		Description: product.Description,
 		Category:    product.Category,
 		Price:       product.Price,
+		Stock:       product.Stock,
 	}
 }
 
