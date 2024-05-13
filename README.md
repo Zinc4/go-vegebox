@@ -43,8 +43,36 @@ VEGEBOX merupakan project berbasis ecommerce yang menggunakan backend Golang. Pr
 
 ## ERD
 
--ERD : **ERD-Vegebox ![ERD-Vegebox](https://github.com/Zinc4/go-vegebox/assets/65228679/a11cd85a-24e7-4092-8a1d-5830600201cf)**
+- ERD : **ERD-Vegebox ![ERD-Vegebox](https://github.com/Zinc4/go-vegebox/assets/65228679/a11cd85a-24e7-4092-8a1d-5830600201cf)**
 
 ## Setup
 
-sebutkan cara menggunakan project ini di lokal
+Clone this repository
+
+```bash
+git clone https://github.com/Zinc4/go-vegebox.git
+```
+
+Navigate to the project directory:
+
+```bash
+cd go-vegebox
+```
+
+Create .env file using this command and open the .env file and edit the value
+
+```bash
+cp .env.example .env
+```
+
+Install module using this command
+
+```bash
+go mod download
+```
+
+Run the project using this command
+
+```bash
+go run main.go
+```
