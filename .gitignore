@@ -1,1 +1,6 @@
 .env
+
+.github/workflows/main.yaml
+
+docker-compose.yaml
+Dockerfile
