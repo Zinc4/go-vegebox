@@ -2,7 +2,7 @@ services:
   database:
     image: mysql:latest
     environment:
-      - MYSQL_ROOT_PASSWORD=Alterra@miniPR0ject#@!
+      - MYSQL_ROOT_PASSWORD=Zeto.2003
       - MYSQL_DATABASE=vegeboxDB
     ports:
       - 3306:3306
