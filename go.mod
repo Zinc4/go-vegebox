@@ -1,6 +1,6 @@
 module mini-project
 
-go 1.21.3
+go 1.20
 
 require (
 	github.com/alexedwards/argon2id v1.0.0
