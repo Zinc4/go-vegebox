@@ -49,6 +49,7 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             cd /home/ec2-user/vegebox
-
+            docker compose down
             docker pull hanggoroseto6460/vegebox:latest
-            docker run -d -p 8080:8080 hanggoroseto6460/vegebox:latest
+            docker run -d -p 1323:1323 hanggoroseto6460/vegebox:latest
+            docker compose up -d

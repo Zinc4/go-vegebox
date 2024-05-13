@@ -27,6 +27,6 @@ func main() {
 	app := echo.New()
 	routes.NewRouter(app)
 
-	app.Start(":8080")
+	app.Start(":1323")
 
 }

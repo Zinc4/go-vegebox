@@ -43,7 +43,7 @@ VEGEBOX merupakan project berbasis ecommerce yang menggunakan backend Golang. Pr
 
 ## ERD
 
--ERD : **ERD-Vegebox ![ERD-Vegebox](https://github.com/Zinc4/go-vegebox/assets/65228679/a11cd85a-24e7-4092-8a1d-5830600201cf)**
+- ERD : **ERD-Vegebox ![ERD-Vegebox](https://github.com/Zinc4/go-vegebox/assets/65228679/a11cd85a-24e7-4092-8a1d-5830600201cf)**
 
 ## Setup
 

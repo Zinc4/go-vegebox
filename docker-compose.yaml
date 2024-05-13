@@ -3,7 +3,7 @@ services:
     image: mysql:latest
     environment:
       - MYSQL_ROOT_PASSWORD=Alterra@miniPR0ject#@!
-      - MYSQL_DATABASE=vegebox
+      - MYSQL_DATABASE=vegeboxDB
     ports:
       - 3306:3306
 
@@ -11,6 +11,6 @@ services:
     image: hanggoroseto6460/vegebox:latest
     restart: always
     depends_on:
-      - database
+      - database-vegebox
     ports:
       - 1323:1323
