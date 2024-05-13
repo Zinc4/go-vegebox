@@ -209,7 +209,9 @@ func (h *adminHandler) UpdateProduct(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, response)
 	}
 
-	return c.JSON(http.StatusOK, helper.ResponseWithData("Update product success", updatedProduct))
+	formatter := product.FormatProduct(updatedProduct)
+
+	return c.JSON(http.StatusOK, helper.ResponseWithData("Update product success", formatter))
 }
 
 func (h *adminHandler) DeleteProduct(c echo.Context) error {

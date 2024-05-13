@@ -58,25 +58,13 @@ func (u *usecase) RegisterUser(input RegisterUserInput) (User, error) {
 	user.Role = "user"
 	user.Avatar = "https://res.cloudinary.com/dvrhf8d9t/image/upload/v1715517059/default-avatar_yt6eua.png"
 
+	if user.Name == "" && user.Email == "" && user.Password == "" {
+		return user, errors.New("please fill your name, email, and password")
+	}
+
 	newUser, err := u.repository.Save(user)
 	if err != nil {
 		return newUser, err
-	}
-
-	if user.Name == "" && user.Email == "" && user.Password == "" {
-		return newUser, errors.New("please input your name, email, and password")
-	}
-
-	if newUser.Name == user.Name {
-		return newUser, errors.New("name already exist")
-	}
-
-	if newUser.Email == user.Email {
-		return newUser, errors.New("email already exist")
-	}
-
-	if newUser.Password == user.Password {
-		return newUser, errors.New("password already exist")
 	}
 
 	otp := helper.GenerateRandomOTP(6)

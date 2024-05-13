@@ -47,7 +47,7 @@ func (r *repository) FindAllCategory() ([]Category, error) {
 
 func (r *repository) FindByCategory(id int) ([]Product, error) {
 	var products []Product
-	err := r.db.Where("category_id = ?", id).Find(&products).Error
+	err := r.db.Preload("Category").Where("category_id = ?", id).Find(&products).Error
 	if err != nil {
 		return products, err
 	}

@@ -63,6 +63,10 @@ func NewRouter(router *echo.Echo) {
 	api.GET("/products", productHandler.GetProducts)
 	api.GET("/products/:id", productHandler.GetProductByID)
 
+	// category product
+	api.GET("/categories", productHandler.GetAllCategory)
+	api.GET("/category/:id", productHandler.GetProductByCategory)
+
 	// cart
 	api.POST("/carts", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.NewCart))
 	api.GET("/cart/:id", middleware.AuthMiddleware(authUsecase, userUsecase, cartHandler.GetCart))

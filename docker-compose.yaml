@@ -1,0 +1,16 @@
+services:
+  database:
+    image: mysql:latest
+    environment:
+      - MYSQL_ROOT_PASSWORD=Alterra@miniPR0ject#@!
+      - MYSQL_DATABASE=vegebox
+    ports:
+      - 3306:3306
+
+  app:
+    image: hanggoroseto6460/vegebox:latest
+    restart: always
+    depends_on:
+      - database
+    ports:
+      - 1323:1323
